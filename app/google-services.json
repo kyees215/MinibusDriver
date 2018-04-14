@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "1086375808475",
+    "firebase_url": "https://minibus-e69df.firebaseio.com",
+    "project_id": "minibus-e69df",
+    "storage_bucket": "minibus-e69df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086375808475:android:3c4ca3e59515cf24",
+        "android_client_info": {
+          "package_name": "com.hkminibus.minibus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086375808475-eufo803osneebbrffa9im5ug7ccflri1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hkminibus.minibus",
+            "certificate_hash": "31cb977344b88ae07aea3d37a41c99b935da93e7"
+          }
+        },
+        {
+          "client_id": "1086375808475-u7ea8jjb6c00v09ih6en38d7vsbn6prk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hkminibus.minibus",
+            "certificate_hash": "91e4282c6626c8830f1c135ced8f260138be95bf"
+          }
+        },
+        {
+          "client_id": "1086375808475-l924jlkg8h3v40l3i6u97ii0l48hej82.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hkminibus.minibus",
+            "certificate_hash": "c8082a6113a760a207e126b8e7dc84d5cceb2cac"
+          }
+        },
+        {
+          "client_id": "1086375808475-djf3k5np6hs2ojkl2s0fleo56kr1d1js.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhCX8vygijWKMG_nlln7Vyb2Y6n7B_78"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086375808475-djf3k5np6hs2ojkl2s0fleo56kr1d1js.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086375808475:android:ebad32eb19dcfeaf",
+        "android_client_info": {
+          "package_name": "com.hkminibus.minibusdriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086375808475-2spldg0apvco21mosb5ihbfhr4asv9pc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hkminibus.minibusdriver",
+            "certificate_hash": "d45013fcfbdab2810424afb32a4eec187840026b"
+          }
+        },
+        {
+          "client_id": "1086375808475-djf3k5np6hs2ojkl2s0fleo56kr1d1js.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnhCX8vygijWKMG_nlln7Vyb2Y6n7B_78"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086375808475-djf3k5np6hs2ojkl2s0fleo56kr1d1js.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

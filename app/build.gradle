@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        minibus {
+            keyAlias 'key0'
+            keyPassword 'minibus'
+            storeFile file('C:\\Users\\Naida Lo\\AndroidStudioProjects\\MinibusDriver\\keystores\\Minibus.jks')
+            //update your keystore path
+            storePassword 'minibus'
+        }
+    }
+    compileSdkVersion 24
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "com.hkminibus.minibusdriver"
+        minSdkVersion 23
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.minibus
+        }
+        debug {
+            signingConfig signingConfigs.minibus
+        }
+    }
+    sourceSets {
+        main { assets.srcDirs = ['src/main/assets', 'src/main/assets/', 'src/main/assets/font'] }
+    }
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-database:11.6.0'
+    implementation 'com.android.support:design:24.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.google.firebase:firebase-core:11.6.0'
+    compile 'com.google.android.gms:play-services:11.6.0'
+    compile 'com.google.android.gms:play-services-maps:11.6.0'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:cardview-v7:24.0.0'
+    implementation 'com.google.android.gms:play-services-maps:11.6.0'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
+}
+apply plugin: 'com.google.gms.google-services'
