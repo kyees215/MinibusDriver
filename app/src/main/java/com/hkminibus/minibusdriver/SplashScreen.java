@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,9 +24,9 @@ public class SplashScreen extends AppCompatActivity {
 
     public static FirebaseDatabase database = FirebaseDatabase.getInstance();
     public static DatabaseReference mRef = database.getReference();
-
     public static List<route_data> allRouteData = new ArrayList<>();
     public static List<stop_data> allStop = new ArrayList<>();
+    public static List<driver_data> allDriver = new ArrayList<>();
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000; //開啟畫面時間(3秒)
@@ -49,6 +50,19 @@ public class SplashScreen extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
+        final Query Driver = mRef.child("driver");
+        Driver.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren() ){
+                    driver_data mDriver = ds.getValue(driver_data.class);
+                    allDriver.add(mDriver);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
         new Handler().postDelayed(new Runnable() {
 
             /*
@@ -64,6 +78,7 @@ public class SplashScreen extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("allStop",(ArrayList<? extends  Parcelable>) allStop);
                 bundle.putParcelableArrayList("allRouteData", (ArrayList<? extends Parcelable>) allRouteData);
+                bundle.putParcelableArrayList("allDriver", (ArrayList<? extends Parcelable>) allDriver);
                 intent.putExtra("bundle",bundle);
                 startActivity(intent);
                 //startActivity(new Intent(SplashScreen.this, MainActivity.class)); //MainActivity為主要檔案名稱
@@ -71,8 +86,6 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
-
-
     }
 
     private void addStopList() {
@@ -99,5 +112,4 @@ public class SplashScreen extends AppCompatActivity {
             });
         }
     }
-
 }
