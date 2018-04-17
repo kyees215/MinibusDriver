@@ -1,7 +1,9 @@
 package com.hkminibus.minibusdriver;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -19,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
     public static List<route_data> allRouteData = new ArrayList<>();
     public static List<stop_data> allStop = new ArrayList<>();
     public static List<driver_data> allDriver = new ArrayList<>();
+    public static List<car_data> allCar = new ArrayList<>();
     public static driver_data currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         allStop = getIntent().getBundleExtra("bundle").getParcelableArrayList("allStop");
         allRouteData = getIntent().getBundleExtra("bundle").getParcelableArrayList("allRouteData");
         allDriver = getIntent().getBundleExtra("bundle").getParcelableArrayList("allDriver");
+        allCar = getIntent().getBundleExtra("bundle").getParcelableArrayList("allCar");
 
         final EditText driverID = (EditText) findViewById(R.id.driverID);
         final EditText password = (EditText) findViewById(R.id.password);
@@ -59,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     //pass to next activity
+                    Intent i = new Intent(getBaseContext(),Menu.class);
+                    //Bundle bundle = new Bundle();
+                    //bundle.putParcelable("CDriver", currentUser);// 序列化
+                    //i.putExtras(bundle);// 发送数据
+                    i.putExtra("CDriver",currentUser);
+                    i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
+                    getBaseContext().startActivity(i);
                 }
             }
         });

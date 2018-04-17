@@ -27,6 +27,7 @@ public class SplashScreen extends AppCompatActivity {
     public static List<route_data> allRouteData = new ArrayList<>();
     public static List<stop_data> allStop = new ArrayList<>();
     public static List<driver_data> allDriver = new ArrayList<>();
+    public static List<car_data> allCar = new ArrayList<>();
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000; //開啟畫面時間(3秒)
@@ -63,6 +64,19 @@ public class SplashScreen extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
+        final Query car = mRef.child("minibus");
+        car.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren() ){
+                    car_data mCar = ds.getValue(car_data.class);
+                    allCar.add(mCar);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
         new Handler().postDelayed(new Runnable() {
 
             /*
@@ -79,6 +93,7 @@ public class SplashScreen extends AppCompatActivity {
                 bundle.putParcelableArrayList("allStop",(ArrayList<? extends  Parcelable>) allStop);
                 bundle.putParcelableArrayList("allRouteData", (ArrayList<? extends Parcelable>) allRouteData);
                 bundle.putParcelableArrayList("allDriver", (ArrayList<? extends Parcelable>) allDriver);
+                bundle.putParcelableArrayList("allCar", (ArrayList<? extends Parcelable>) allCar);
                 intent.putExtra("bundle",bundle);
                 startActivity(intent);
                 //startActivity(new Intent(SplashScreen.this, MainActivity.class)); //MainActivity為主要檔案名稱
