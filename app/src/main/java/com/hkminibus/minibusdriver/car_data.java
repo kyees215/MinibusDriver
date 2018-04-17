@@ -5,19 +5,19 @@ import android.os.Parcelable;
 
 public class car_data implements Parcelable {
     private String mPlateNo;
-    private String carType;
-    private String mcolor;
+    private String type;
+    private String carSize;
 
-    public car_data(String mPlateNo, String carType, String mcolor){
+    public car_data(String mPlateNo, String type, String carSize){
         this.mPlateNo = mPlateNo;
-        this.carType = carType;
-        this.mcolor = mcolor;
+        this.type = type;
+        this.carSize = carSize;
     }
 
     public car_data(){}
     public String getmPlateNo(){return mPlateNo;}
-    public String getCarType() {return carType;}
-    public String getMcolor() {return mcolor;}
+    public String getType() {return type;}
+    public String getCarSize() {return carSize;}
 
     @Override
     public int describeContents() {
@@ -27,14 +27,14 @@ public class car_data implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mPlateNo);
-        parcel.writeString(carType);
-        parcel.writeString(mcolor);
+        parcel.writeString(type);
+        parcel.writeString(carSize);
     }
 
     public car_data(Parcel in){
         mPlateNo = in.readString();
-        carType = in.readString();
-        mcolor = in.readString();
+        type = in.readString();
+        carSize = in.readString();
     }
 
     public static final Parcelable.Creator<car_data> CREATOR = new Parcelable.Creator<car_data>()
