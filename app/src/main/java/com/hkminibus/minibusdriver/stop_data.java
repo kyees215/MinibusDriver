@@ -15,6 +15,8 @@ public class stop_data implements Parcelable{
     private double radius;
     private int rank;
 
+    public stop_data(){}
+
     public stop_data(String name, double latitude, double longitude, double radius, int rank){
         this.name = name;
         this.latitude = latitude;
@@ -23,7 +25,7 @@ public class stop_data implements Parcelable{
         this.rank = rank;
     }
 
-    public stop_data(){}
+
     public String getName(){return name;}
     public double getLatitude() {return latitude;}
     public double getLongitude() {return longitude;}

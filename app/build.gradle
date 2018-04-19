@@ -5,7 +5,9 @@ android {
         minibus {
             keyAlias 'key0'
             keyPassword 'minibus'
-            storeFile file('C:\\Users\\Naida Lo\\AndroidStudioProjects\\MinibusDriver\\keystores\\Minibus.jks')
+            ///Users/Jasmine/Desktop/MinibusDriver/keystores/Minibus.jks
+            //C:\Users\Naida Lo\AndroidStudioProjects\MinibusDriver\keystores\Minibus.jks
+            storeFile file('/Users/Jasmine/Desktop/MinibusDriver/keystores/Minibus.jks')
             //update your keystore path
             storePassword 'minibus'
         }
