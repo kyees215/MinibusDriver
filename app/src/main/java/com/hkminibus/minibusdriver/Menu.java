@@ -48,6 +48,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
     ArrayList routeNoList = new ArrayList();
     ArrayList routeNameList = new ArrayList();
     route_data cRoute;
+    car_data cCar;
 
 
     public static FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -161,13 +162,12 @@ public class Menu extends AppCompatActivity implements LocationListener {
                     String mRouteName = routeName.getText().toString();
                     String mRouteNo = routeNo.getText().toString();
                     String mPlateNo = plateNo.getText().toString().toUpperCase();
+                    String carSize = cCar.getCarSize();
                     String type = cRoute.getType();
                     mStopList.addAll(cRoute.getmStopList());
                     String mRouteID = cRoute.getmRouteID();
 
-
-
-                    writeTodb(currentLat,currentLng, mPlateNo,mRouteName,mRouteNo,type,mRouteID,mStopList);
+                    writeTodb(currentLat,currentLng, mPlateNo,carSize,mRouteName,mRouteNo,type,mRouteID,mStopList);
 
                     Log.v("A.writeTodb",  String.valueOf(currentLat) + " " + String.valueOf(currentLng));
                     Intent i = new Intent(getBaseContext(), Driving.class);
@@ -175,7 +175,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
                     i.putExtra("drivingID", driving_id);
                     i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
                     getBaseContext().startActivity(i);
-
                 }
             }
         });
@@ -193,38 +192,34 @@ public class Menu extends AppCompatActivity implements LocationListener {
             routeName.setError("找不到此路線");
         }
         for (route_data r : MainActivity.allRouteData) {
-            if (r.getmRouteName().matches(routeName.getText().toString())) {
-                if (r.getmRouteNo().matches(routeNo.getText().toString())) {
+            if (r.getmRouteName().matches(routeName.getText().toString())){
+                if(r.getmRouteNo().matches(routeNo.getText().toString())){
                     cRoute = r;
-                    valid = true;
+                    for (car_data c : MainActivity.allCar) {
+                        if (c.getmPlateNo().matches(plateNo.getText().toString())){
+                            if(c.getType().matches(r.getType())){
+                                cCar = c;
+                                valid = true;
+                            } else {
+                                Toast.makeText(getBaseContext(), "小巴類別與行車路線不乎", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
                 } else {
                     Toast.makeText(getBaseContext(), "路線編號與行車路線不乎", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+
         return valid;
     }
 
-    public void writeTodb(final double lan, final double lng, final String mPlateNo,
+    public void writeTodb(final double lat, final double lng, final String mPlateNo, final String carSize,
                           final String mRouteName, final String mRouteNo, final String type, final String mRouteID
             , final ArrayList<stop_data> mStopList) {
 
 
         final DatabaseReference drivingRef = mRef.child("Driving");
-
-        //Find car Size
-        Query queryRef = mRef.child("minibus").orderByChild("mPlateNo").equalTo(mPlateNo);
-        queryRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                car_data c = dataSnapshot.getValue(car_data.class);
-                cCarSize = c.getCarSize();
-                Log.d("A. This is getCarS", mPlateNo + " " + c.toString() + " " + c.getCarSize());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
 
         //make stoplist
         Query stop_query = mRef.child("Stop").child(mRouteID);
@@ -260,7 +255,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //將資料放入driving_db
-                driving_db new_record = new driving_db(cCarSize, false, lan, lng,
+                driving_db new_record = new driving_db(carSize, true, false, lat, lng,
                         mPlateNo, mRouteName, mRouteNo, false, mStopList, type);
 
                 //將new_record放人子目錄 /ID

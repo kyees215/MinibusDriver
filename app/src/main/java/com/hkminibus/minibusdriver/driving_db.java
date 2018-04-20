@@ -9,8 +9,9 @@ import java.util.List;
 
 public class driving_db {
     private String carSize;
+    private boolean driving;
     private boolean full;
-    private double lan;
+    private double lat;
     private double lng;
     private String mPlateNo;
     private String mRouteName;
@@ -21,11 +22,12 @@ public class driving_db {
 
     public driving_db() {}
 
-    public driving_db(String carSize, boolean full, double lan, double lng, String mPlateNo,
+    public driving_db(String carSize, boolean driving, boolean full, double lat, double lng, String mPlateNo,
                       String mRouteName, String mRouteNo, boolean nextStop, List<stop_data> stopList,String type){
         this.carSize = carSize;
+        this.driving = driving;
         this.full = full;
-        this.lan = lan;
+        this.lat = lat;
         this.lng = lng;
         this.mPlateNo = mPlateNo;
         this.mRouteName = mRouteName;
@@ -36,8 +38,9 @@ public class driving_db {
     }
 
     public String getCarSize() {return carSize;}
+    public boolean isDriving() {return driving;}
     public boolean isFull() {return full;}
-    public double getLan() {return lan;}
+    public double getLat() {return lat;}
     public double getLng() {return lng;}
     public String getmPlateNo() {return mPlateNo;}
     public String getmRouteName() {return mRouteName;}
