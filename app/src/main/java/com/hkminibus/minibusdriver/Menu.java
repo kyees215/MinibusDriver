@@ -54,24 +54,13 @@ public class Menu extends AppCompatActivity implements LocationListener {
     public static FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference mRef = database.getReference();
     int count;
-    String cCarSize;
-    private boolean mLocationPermissionGranted;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mLastKnownLocation;
     public double currentLat = 0.0;
     public double currentLng = 0.0;
     ArrayList<stop_data> mStopList = new ArrayList<>();
     String driving_id;
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String GPS_LOCATION_NAME = android.location.LocationManager.GPS_PROVIDER;
-    private static final int REQUEST_PRESSMION_CODE = 10000;
-    private final static String[] MULTI_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION};
+    public static String wrote_Did;
 
     LocationManager locationManager;
-    private boolean isGpsEnabled;
-    private String locateType;
     static final int REQUEST_LOCATION = 1;
 
 
@@ -167,14 +156,13 @@ public class Menu extends AppCompatActivity implements LocationListener {
                     mStopList.addAll(cRoute.getmStopList());
                     String mRouteID = cRoute.getmRouteID();
 
-                    writeTodb(currentLat,currentLng, mPlateNo,carSize,mRouteName,mRouteNo,type,mRouteID,mStopList);
+                    writeFb(carSize,mPlateNo,mRouteName,mRouteNo,type,mRouteID,mStopList);
 
-                    Log.v("A.writeTodb",  String.valueOf(currentLat) + " " + String.valueOf(currentLng));
                     Intent i = new Intent(getBaseContext(), Driving.class);
                     i.putExtra("cRoute", cRoute);
-                    i.putExtra("drivingID", driving_id);
                     i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
                     getBaseContext().startActivity(i);
+
                 }
             }
         });
@@ -210,13 +198,11 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 }
             }
         }
-
         return valid;
     }
 
-    public void writeTodb(final double lat, final double lng, final String mPlateNo, final String carSize,
-                          final String mRouteName, final String mRouteNo, final String type, final String mRouteID
-            , final ArrayList<stop_data> mStopList) {
+    public void writeFb(final String carSize, final String mPlateNo, final String mRouteName, final String mRouteNo,
+                          final String type, final String mRouteID, final ArrayList<stop_data> mStopList) {
 
         final DatabaseReference drivingRef = mRef.child("Driving");
 
@@ -243,6 +229,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 // get the child number
                 count = (int) dataSnapshot.getChildrenCount() + 1;
                 driving_id = "D" + String.valueOf(count < 1000 ? "000" : "") + count;
+
             }
 
             @Override
@@ -254,14 +241,13 @@ public class Menu extends AppCompatActivity implements LocationListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //將資料放入driving_db
-                driving_db new_record = new driving_db(carSize, true, false, lat, lng,
-                        mPlateNo, mRouteName, mRouteNo, false, mStopList, type);
+                driving_db new_record = new driving_db(carSize, true, false,
+                        currentLat, currentLng, mPlateNo, mRouteName, mRouteNo,
+                        false, mStopList, type);
 
                 //將new_record放人子目錄 /ID
                 drivingRef.child(driving_id).setValue(new_record);
-                //drivingRef.child(driving_id).child("stopList").child()
-
-                Log.v("dsdsds", driving_id);
+                wrote_Did = driving_id;
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
@@ -277,10 +263,8 @@ public class Menu extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {}
-
     @Override
     public void onProviderEnabled(String provider) {}
-
     @Override
     public void onProviderDisabled(String provider) {}
 }

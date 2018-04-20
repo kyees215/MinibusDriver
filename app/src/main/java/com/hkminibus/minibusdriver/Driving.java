@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +25,6 @@ import java.util.List;
 public class Driving  extends AppCompatActivity {
     Button fullBtn;
     route_data cRoute;
-    String driving_id;
     TextView nextStop;
 
     public static List<stop_data> mStopList = new ArrayList<>();
@@ -34,8 +34,8 @@ public class Driving  extends AppCompatActivity {
 
     public static FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference mRef = database.getReference();
-
     boolean fulled = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +66,23 @@ public class Driving  extends AppCompatActivity {
         mStopAdapter = new StopAdapter(this, mStopList);
         mRecyclerView.setAdapter(mStopAdapter);
 
-        //mRef.child("Driving").addChildEventListener()
+
 
         nextStop = (TextView) findViewById(R.id.nextStop);
         fullBtn = (Button) findViewById(R.id.fullBtn);
 
+        //Click full btn and update the firebase
         fullBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //true = pressed
                 if (fulled){
-                    mRef.child("Driving").child(driving_id).child("full").setValue(false);
+                    mRef.child("Driving").child(Menu.wrote_Did).child("full").setValue(false);
                     fulled = false;
                     Toast.makeText(getBaseContext(), "已取消", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    mRef.child("Driving").child(driving_id).child("full").setValue(true);
+                    mRef.child("Driving").child(Menu.wrote_Did).child("full").setValue(true);
                     fulled = true;
                     Toast.makeText(getBaseContext(), "已按", Toast.LENGTH_SHORT).show();
                 }
