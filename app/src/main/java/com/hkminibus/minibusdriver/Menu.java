@@ -218,7 +218,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
                           final String mRouteName, final String mRouteNo, final String type, final String mRouteID
             , final ArrayList<stop_data> mStopList) {
 
-
         final DatabaseReference drivingRef = mRef.child("Driving");
 
         //make stoplist

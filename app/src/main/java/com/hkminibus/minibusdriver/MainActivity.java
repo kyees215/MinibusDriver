@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     if (d.getId().matches(driverID.getText().toString())) {
                         correctID = true;
                         //it's not good to getId(), but idk why i cant use validatePassword(password). TBC
-                        if (d.getId().matches(password.getText().toString())){
+                        if (d.getPassword().matches(password.getText().toString())){
                             correctPW = true;
                             currentUser = d;
                         }
