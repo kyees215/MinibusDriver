@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -56,7 +58,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
     int count;
     public double currentLat = 0.0;
     public double currentLng = 0.0;
-    ArrayList<stop_data> mStopList = new ArrayList<>();
+    String stopName;
     String driving_id;
     public static String wrote_Did;
 
@@ -96,6 +98,9 @@ public class Menu extends AppCompatActivity implements LocationListener {
             if (!routeNoList.contains(r.getmRouteNo())) {
                 routeNoList.add(r.getmRouteNo());
             }
+            if (!routeNameList.contains(r.getmRouteName())) {
+                routeNameList.add(r.getmRouteName());
+            }
         }
         routeNoAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, routeNoList);
         routeNo = (AutoCompleteTextView) this.findViewById(R.id.routeNo);
@@ -109,15 +114,16 @@ public class Menu extends AppCompatActivity implements LocationListener {
             }
         });
 
-        for (route_data r : MainActivity.allRouteData) {
-            if (!routeNameList.contains(r.getmRouteName())) {
-                routeNameList.add(r.getmRouteName());
-            }
-        }
         routeNameAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, routeNameList);
         routeName = (AutoCompleteTextView) this.findViewById(R.id.routeName);
-        routeName.setThreshold(0);
+        routeName.setThreshold(1);
         routeName.setAdapter(routeNameAdapter);
+        routeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    routeName.showDropDown();
+            }
+        });
         routeName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -153,10 +159,10 @@ public class Menu extends AppCompatActivity implements LocationListener {
                     String mPlateNo = plateNo.getText().toString().toUpperCase();
                     String carSize = cCar.getCarSize();
                     String type = cRoute.getType();
-                    mStopList.addAll(cRoute.getmStopList());
+                    stopName = cRoute.getmStopList().get(0).getName();
                     String mRouteID = cRoute.getmRouteID();
 
-                    writeFb(carSize,mPlateNo,mRouteName,mRouteNo,type,mRouteID,mStopList);
+                    writeFb(carSize,mPlateNo,mRouteName,mRouteNo,type,mRouteID,stopName);
 
                     Intent i = new Intent(getBaseContext(), Driving.class);
                     i.putExtra("cRoute", cRoute);
@@ -202,25 +208,9 @@ public class Menu extends AppCompatActivity implements LocationListener {
     }
 
     public void writeFb(final String carSize, final String mPlateNo, final String mRouteName, final String mRouteNo,
-                          final String type, final String mRouteID, final ArrayList<stop_data> mStopList) {
+                          final String type, final String mRouteID, final String stopName) {
 
         final DatabaseReference drivingRef = mRef.child("Driving");
-
-        //make stoplist
-        Query stop_query = mRef.child("Stop").child(mRouteID);
-        stop_query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mStopList.clear();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    stop_data s = ds.getValue(stop_data.class);
-                    mStopList.add(s);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
 
         //count the id
         drivingRef.addValueEventListener(new ValueEventListener() {
@@ -243,7 +233,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 //將資料放入driving_db
                 driving_db new_record = new driving_db(carSize, true, false,
                         currentLat, currentLng, mPlateNo, mRouteName, mRouteNo,
-                        false, mStopList, type);
+                        false, stopName, type);
 
                 //將new_record放人子目錄 /ID
                 drivingRef.child(driving_id).setValue(new_record);

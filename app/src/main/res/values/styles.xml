@@ -6,7 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:listDivider">@drawable/divider</item>
+
     </style>
+    <!--windowBackground only affects the main window's background.
+    colorBackground affects not only the background of the main window but also of all components
+    e.g. dialogs unless you override it in the component layout.-->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen </item>
     </style>

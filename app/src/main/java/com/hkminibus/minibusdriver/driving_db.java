@@ -17,13 +17,13 @@ public class driving_db {
     private String mRouteName;
     private String mRouteNo;
     private boolean nextStop;
-    private List<stop_data> stopList = new ArrayList<stop_data>();
+    private String stopName;
     private String type;
 
     public driving_db() {}
 
     public driving_db(String carSize, boolean driving, boolean full, double lat, double lng, String mPlateNo,
-                      String mRouteName, String mRouteNo, boolean nextStop, List<stop_data> stopList,String type){
+                      String mRouteName, String mRouteNo, boolean nextStop, String stopName,String type){
         this.carSize = carSize;
         this.driving = driving;
         this.full = full;
@@ -33,7 +33,7 @@ public class driving_db {
         this.mRouteName = mRouteName;
         this.mRouteNo = mRouteNo;
         this.nextStop = nextStop;
-        this.stopList = stopList;
+        this.stopName = stopName;
         this.type = type;
     }
 
@@ -46,6 +46,6 @@ public class driving_db {
     public String getmRouteName() {return mRouteName;}
     public String getmRouteNo() {return mRouteNo;}
     public boolean isNextStop() {return nextStop;}
-    public List<stop_data> getstopList() {return stopList;}
+    public String getStopName() {return stopName;}
     public String getType() {return type;}
 }
