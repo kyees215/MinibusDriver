@@ -112,7 +112,7 @@ public class SplashScreen extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //allStop.clear();
-                    current.clearmStopList();
+                    //current.clearmStopList();
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         stop_data s = ds.getValue(stop_data.class);
                         current.setmStopList(s);

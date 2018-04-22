@@ -5,5 +5,6 @@
     <color name="colorAccent">#F6D645</color>
     <color name="red">#9C1F25</color>
     <color name="dark_gray">#696969</color>
+    <color name="grey">#A9A9A9</color>
     <color name="colorsplashscreen">#FFFFFF</color>
 </resources>

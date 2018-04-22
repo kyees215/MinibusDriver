@@ -1,16 +1,20 @@
 package com.hkminibus.minibusdriver;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -40,7 +44,10 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.location.Location.distanceBetween;
+
 public class Menu extends AppCompatActivity implements LocationListener {
+    private Toolbar toolbar;
     driver_data currentDriver;
     TextView driverName, driverID;
     AutoCompleteTextView plateNo, routeNo, routeName;
@@ -70,6 +77,12 @@ public class Menu extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ToolbarHelper.addMiddleTitle(this, "Minibus+", toolbar);
+
         currentDriver = getIntent().getParcelableExtra("CDriver");
 
         driverName = (TextView) this.findViewById(R.id.driverName);
@@ -175,7 +188,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
     }
 
     public boolean validateInput() {
-        boolean valid = false;
+        boolean routeValid = false;
         if (!plateNoList.contains(plateNo.getText().toString())) {
             plateNo.setError("車牌號碼錯誤");
         }
@@ -193,7 +206,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
                         if (c.getmPlateNo().matches(plateNo.getText().toString())){
                             if(c.getType().matches(r.getType())){
                                 cCar = c;
-                                valid = true;
+                                routeValid = true;
                             } else {
                                 Toast.makeText(getBaseContext(), "小巴類別與行車路線不乎", Toast.LENGTH_SHORT).show();
                             }
@@ -204,7 +217,35 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 }
             }
         }
-        return valid;
+        boolean carValid = false;
+        Query statusQuery = mRef.child("Driving");
+        statusQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    driving_db d = ds.getValue(driving_db.class);
+                    if (d.getmPlateNo().matches(plateNo.getText().toString())){
+                        if (d.isDriving()){
+                            plateNo.setError("請檢查車牌號碼");
+                        }
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        boolean locationValid = false;
+        float[] dist = new float[1];
+        distanceBetween(currentLat,currentLng,cRoute.getmStopList().get(0).getLatitude(),cRoute.getmStopList().get(0).getLongitude(),dist);
+        //500000 for testing
+        if(dist[0]<500000){
+            locationValid = true;
+        }else{
+            Toast.makeText(getBaseContext(), "請到達起點才開車", Toast.LENGTH_SHORT).show();
+        }
+        return routeValid&&locationValid;
     }
 
     public void writeFb(final String carSize, final String mPlateNo, final String mRouteName, final String mRouteNo,
@@ -257,4 +298,5 @@ public class Menu extends AppCompatActivity implements LocationListener {
     public void onProviderEnabled(String provider) {}
     @Override
     public void onProviderDisabled(String provider) {}
+
 }

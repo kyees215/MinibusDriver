@@ -16,17 +16,20 @@ public class StopAdapter extends RecyclerView.Adapter<StopAdapter.StopViewHolder
     private Context mContext;
     public class StopViewHolder extends RecyclerView.ViewHolder {
         TextView mWaiting;
-        TextView mText;
+        //TextView mText;
         TextView mStopName;
 
         StopViewHolder(View itemView) {
             super(itemView);
             mWaiting = (TextView) itemView.findViewById(R.id.waiting);
-            mText = (TextView) itemView.findViewById(R.id.textView9);
+            //mText = (TextView) itemView.findViewById(R.id.textView9);
             mStopName = (TextView) itemView.findViewById(R.id.stop_name);
         }
         public void setValues(stop_data mStopList) {
-            mWaiting.setText(mStopList.getRank());
+            mWaiting.setText(mStopList.getRank()+" 人在等候");
+            if (mStopList.getRank()>0){
+                mWaiting.setBackgroundResource(R.drawable.waitingbackground);
+            }
             mStopName.setText(mStopList.getName());
         }
     }
@@ -47,7 +50,10 @@ public class StopAdapter extends RecyclerView.Adapter<StopAdapter.StopViewHolder
     public void onBindViewHolder(StopViewHolder holder, int position) {
         final stop_data mStop = mStopList.get(position);
         holder.mStopName.setText(mStop.getName());
-        holder.mWaiting.setText(String.valueOf(mStop.getRank()));
+        holder.mWaiting.setText(mStop.getRank()+" 人在等候");
+        if (mStop.getRank()>0){
+            holder.mWaiting.setBackgroundResource(R.drawable.waitingbackground);
+        }
     }
 
     @Override

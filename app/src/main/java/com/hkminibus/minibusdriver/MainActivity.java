@@ -3,6 +3,7 @@ package com.hkminibus.minibusdriver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     public static List<car_data> allCar = new ArrayList<>();
     public static driver_data currentUser;
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         allRouteData = getIntent().getBundleExtra("bundle").getParcelableArrayList("allRouteData");
         allDriver = getIntent().getBundleExtra("bundle").getParcelableArrayList("allDriver");
         allCar = getIntent().getBundleExtra("bundle").getParcelableArrayList("allCar");
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ToolbarHelper.addMiddleTitle(this, "Minibus+", toolbar);
 
         final EditText driverID = (EditText) findViewById(R.id.driverID);
         final EditText password = (EditText) findViewById(R.id.password);
