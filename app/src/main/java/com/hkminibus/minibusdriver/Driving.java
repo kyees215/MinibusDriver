@@ -66,6 +66,7 @@ public class Driving  extends AppCompatActivity{
     LocationCallback mLocationCallback;
 
     public MediaPlayer sound;
+    boolean played = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,12 +175,7 @@ public class Driving  extends AppCompatActivity{
             }
         });
     }
-    /*@Override
-    public void onPause() {
-        super.onPause();  // Always call the superclass method first
-        stopTrackingLocation();
-        mRef.child("Driving").child(Menu.wrote_Did).child("driving").setValue(false);
-    }*/
+
     @Override
     public void onBackPressed() {
         finishDriving();
@@ -210,11 +206,18 @@ public class Driving  extends AppCompatActivity{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Boolean b = dataSnapshot.getValue(Boolean.class);
                     Log.v("nextStop", String.valueOf(b));
+
                     if(b){
                         nextStop.setTextColor(getColor(R.color.red));
-                        sound.start();
+                        if(!played){
+                            sound.start();
+                            played = true;
+                        }
                     }
-                    else {nextStop.setTextColor(getColor(R.color.dark_gray));}
+                    else {
+                        nextStop.setTextColor(getColor(R.color.dark_gray));
+                        played = false;
+                    }
                 }
 
                 @Override
@@ -272,6 +275,7 @@ public class Driving  extends AppCompatActivity{
             Intent i = new Intent(getBaseContext(), Menu.class);
             i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
             getBaseContext().startActivity(i);
+            stopTrackingLocation();
             finish();
         }else{
             AlertDialog.Builder builder = new AlertDialog.Builder(Driving.this);
@@ -282,6 +286,7 @@ public class Driving  extends AppCompatActivity{
                     mRef.child("Driving").child(Menu.wrote_Did).child("driving").setValue(false);
                     Intent i = new Intent(getBaseContext(), Menu.class);
                     i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
+                    stopTrackingLocation();
                     finish();
                 }
             });

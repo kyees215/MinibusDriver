@@ -1,7 +1,17 @@
 package com.hkminibus.minibusdriver;
 
+import android.*;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     public static driver_data currentUser;
 
     private Toolbar toolbar;
+    LocationManager locationManager;
+    static final int REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +58,23 @@ public class MainActivity extends AppCompatActivity {
         final EditText password = (EditText) findViewById(R.id.password);
         Button loginBtn = (Button) findViewById(R.id.loginBtn);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            //请求权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
+        }
+
         loginBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //hide keyboard
                 InputMethodManager in = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 in.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
                 boolean correctID=false;
                 boolean correctPW=false;
                 for (driver_data d:allDriver) {
@@ -64,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 if (!correctID){
                     Toast.makeText(getBaseContext(), "帳號錯誤",Toast.LENGTH_SHORT).show();
                 }
@@ -71,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "密碼錯誤",Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                     //pass to next activity
                     Intent i = new Intent(getBaseContext(),Menu.class);
                     //Bundle bundle = new Bundle();
@@ -78,7 +103,11 @@ public class MainActivity extends AppCompatActivity {
                     //i.putExtras(bundle);// 发送数据
                     i.putExtra("CDriver",currentUser);
                     i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
-                    getBaseContext().startActivity(i);
+                    getBaseContext().startActivity(i);}
+                    else {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
                 }
             }
         });

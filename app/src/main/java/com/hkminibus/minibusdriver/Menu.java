@@ -59,7 +59,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
     route_data cRoute;
     car_data cCar;
 
-
     public static FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference mRef = database.getReference();
     int count;
@@ -71,7 +70,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
 
     LocationManager locationManager;
     static final int REQUEST_LOCATION = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,22 +143,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
             }
         });
 
-        //Get lng and lat检查权限
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            //请求权限
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-
-        }
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-        onLocationChanged(location);
-
-        Log.v("OnlocationChange",  String.valueOf(currentLat) + " " + String.valueOf(currentLng));
-
-
         driveBtn = (Button) this.findViewById(R.id.driveBtn);
         driveBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -188,6 +170,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
     }
 
     public boolean validateInput() {
+
         boolean routeValid = false;
         if (!plateNoList.contains(plateNo.getText().toString())) {
             plateNo.setError("車牌號碼錯誤");
@@ -217,25 +200,19 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 }
             }
         }
-        boolean carValid = false;
-        Query statusQuery = mRef.child("Driving");
-        statusQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    driving_db d = ds.getValue(driving_db.class);
-                    if (d.getmPlateNo().matches(plateNo.getText().toString())){
-                        if (d.isDriving()){
-                            plateNo.setError("請檢查車牌號碼");
-                        }
-                        break;
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            //请求权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
+        }
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        onLocationChanged(location);
+        Log.v("OnlocationChange",  String.valueOf(currentLat) + " " + String.valueOf(currentLng));
         boolean locationValid = false;
         float[] dist = new float[1];
         distanceBetween(currentLat,currentLng,cRoute.getmStopList().get(0).getLatitude(),cRoute.getmStopList().get(0).getLongitude(),dist);
@@ -285,7 +262,6 @@ public class Menu extends AppCompatActivity implements LocationListener {
         });
 
     }
-
     @Override
     public void onLocationChanged(Location location) {
         currentLat = location.getLatitude();
