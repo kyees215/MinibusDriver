@@ -30,7 +30,7 @@ public class SplashScreen extends AppCompatActivity {
     public static List<car_data> allCar = new ArrayList<>();
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000; //開啟畫面時間(3秒)
+    private static int SPLASH_TIME_OUT = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

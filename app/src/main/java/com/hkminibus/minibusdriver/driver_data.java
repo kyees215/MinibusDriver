@@ -19,13 +19,7 @@ public class driver_data implements Parcelable {
     public String getName(){return name;}
     public String getId() {return id;}
     public String getPassword() {return password;}
-    public boolean validatePassword(String tmp){
-        boolean correct = false;
-            if (password.matches(tmp)){
-            correct = true;
-        }
-        return correct;
-    }
+
 
     @Override
     public int describeContents() {

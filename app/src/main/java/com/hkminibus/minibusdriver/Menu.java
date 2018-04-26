@@ -67,6 +67,8 @@ public class Menu extends AppCompatActivity implements LocationListener {
     String stopName;
     String driving_id;
     public static String wrote_Did;
+    public static List<driving_db> testing = new ArrayList<>();
+
 
     LocationManager locationManager;
     static final int REQUEST_LOCATION = 1;
@@ -75,6 +77,22 @@ public class Menu extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
+        final Query Driving = mRef.child("Driving").orderByChild("order");
+        Driving.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    testing.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren() ){
+                    testing.add(ds.getValue(driving_db.class));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,7 +150,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
         routeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    routeName.showDropDown();
+                routeName.showDropDown();
             }
         });
         routeName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -147,23 +165,38 @@ public class Menu extends AppCompatActivity implements LocationListener {
         driveBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateInput()) {
-                    //build data
-                    String mRouteName = routeName.getText().toString();
-                    String mRouteNo = routeNo.getText().toString();
-                    String mPlateNo = plateNo.getText().toString().toUpperCase();
-                    String carSize = cCar.getCarSize();
-                    String type = cRoute.getType();
-                    stopName = cRoute.getmStopList().get(0).getName();
-                    String mRouteID = cRoute.getmRouteID();
+                boolean routeNameNoNotE = true;
+                boolean routeNoNotE = true;
 
-                    writeFb(carSize,mPlateNo,mRouteName,mRouteNo,type,mRouteID,stopName);
+               // Log.v("testingkey",Boolean.toString(testing.get(18).isDriving()));
+                if (routeNo.getText().toString().isEmpty()){
+                    routeNoNotE = false;
+                    routeNo.setError("車牌號碼不能空白");
+                }
+                if (routeName.getText().toString().isEmpty()){
+                    routeNameNoNotE = false;
+                    routeName.setError("路線名稱不能空白");
+                }
 
-                    Intent i = new Intent(getBaseContext(), Driving.class);
-                    i.putExtra("cRoute", cRoute);
-                    i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
-                    getBaseContext().startActivity(i);
+                if (routeNameNoNotE && routeNoNotE){
+                    if (validateInput() ) {
+                        //build data
+                        String mRouteName = routeName.getText().toString();
+                        String mRouteNo = routeNo.getText().toString();
+                        String mPlateNo = plateNo.getText().toString().toUpperCase();
+                        String carSize = cCar.getCarSize();
+                        String type = cRoute.getType();
+                        stopName = cRoute.getmStopList().get(0).getName();
+                        String mRouteID = cRoute.getmRouteID();
 
+                        writeFb(carSize,mPlateNo,mRouteName,mRouteNo,type,mRouteID,stopName);
+
+                        Intent i = new Intent(getBaseContext(), Driving.class);
+                        i.putExtra("cRoute", cRoute);
+                        i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
+                        getBaseContext().startActivity(i);
+
+                    }
                 }
             }
         });
@@ -188,8 +221,30 @@ public class Menu extends AppCompatActivity implements LocationListener {
                     for (car_data c : MainActivity.allCar) {
                         if (c.getmPlateNo().matches(plateNo.getText().toString())){
                             if(c.getType().matches(r.getType())){
-                                cCar = c;
-                                routeValid = true;
+                                for (driving_db a: testing){
+                                    if ( a.getmPlateNo().matches(plateNo.getText().toString())){
+                                        Log.v("car is not driving", Integer.toString(a.getOrder()));
+                                        Log.v("car is not driving", Boolean.toString(a.isDriving()));
+                                        if (a.isDriving() == false){
+                                            cCar = c;
+                                            routeValid = true;
+                                            Log.v("car is not driving", a.getmPlateNo());
+                                            Log.v("car is not driving", a.getmRouteName());
+                                            Log.v("car is not driving", a.getmRouteNo());
+                                            Log.v("car is not driving", Integer.toString(a.getOrder()));
+                                            Log.v("car is not driving", "yes");
+                                        } else {
+                                            routeValid = false;
+                                            plateNo.setError("請檢查車牌號碼");
+                                            Log.v("car is not driving", a.getmPlateNo());
+                                            Log.v("car is not driving", a.getmRouteName());
+                                            Log.v("car is not driving", a.getmRouteNo());
+                                            Log.v("car is not driving", Integer.toString(a.getOrder()));
+                                            Log.v("car is not driving", "no");
+                                            break;
+                                        }
+                                    }
+                                }
                             } else {
                                 Toast.makeText(getBaseContext(), "小巴類別與行車路線不乎", Toast.LENGTH_SHORT).show();
                             }
@@ -217,6 +272,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
         float[] dist = new float[1];
         distanceBetween(currentLat,currentLng,cRoute.getmStopList().get(0).getLatitude(),cRoute.getmStopList().get(0).getLongitude(),dist);
         //500000 for testing
+        //dist[0] =1;
         if(dist[0]<500000){
             locationValid = true;
         }else{
@@ -226,7 +282,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
     }
 
     public void writeFb(final String carSize, final String mPlateNo, final String mRouteName, final String mRouteNo,
-                          final String type, final String mRouteID, final String stopName) {
+                        final String type, final String mRouteID, final String stopName) {
 
         final DatabaseReference drivingRef = mRef.child("Driving");
 
@@ -251,7 +307,7 @@ public class Menu extends AppCompatActivity implements LocationListener {
                 //將資料放入driving_db
                 driving_db new_record = new driving_db(carSize, true, false,
                         currentLat, currentLng, mPlateNo, mRouteName, mRouteNo,
-                        false, stopName, type);
+                        false, count, stopName, type);
 
                 //將new_record放人子目錄 /ID
                 drivingRef.child(driving_id).setValue(new_record);

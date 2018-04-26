@@ -3,9 +3,7 @@ package com.hkminibus.minibusdriver;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jasmine on 18/4/2018.
- */
+
 
 public class driving_db {
     private String carSize;
@@ -17,13 +15,14 @@ public class driving_db {
     private String mRouteName;
     private String mRouteNo;
     private boolean nextStop;
+    private int order;
     private String stopName;
     private String type;
 
     public driving_db() {}
 
     public driving_db(String carSize, boolean driving, boolean full, double lat, double lng, String mPlateNo,
-                      String mRouteName, String mRouteNo, boolean nextStop, String stopName,String type){
+                      String mRouteName, String mRouteNo, boolean nextStop,int order, String stopName,String type){
         this.carSize = carSize;
         this.driving = driving;
         this.full = full;
@@ -33,6 +32,7 @@ public class driving_db {
         this.mRouteName = mRouteName;
         this.mRouteNo = mRouteNo;
         this.nextStop = nextStop;
+        this.order = order;
         this.stopName = stopName;
         this.type = type;
     }
@@ -46,6 +46,7 @@ public class driving_db {
     public String getmRouteName() {return mRouteName;}
     public String getmRouteNo() {return mRouteNo;}
     public boolean isNextStop() {return nextStop;}
+    public int getOrder() {return  order;}
     public String getStopName() {return stopName;}
     public String getType() {return type;}
 }

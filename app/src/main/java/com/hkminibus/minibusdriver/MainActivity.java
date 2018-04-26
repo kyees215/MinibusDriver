@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
-            //请求权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
         }
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 for (driver_data d:allDriver) {
                     if (d.getId().matches(driverID.getText().toString())) {
                         correctID = true;
-                        //it's not good to getId(), but idk why i cant use validatePassword(password). TBC
                         if (d.getPassword().matches(password.getText().toString())){
                             correctPW = true;
                             currentUser = d;
@@ -98,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
                     if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                     //pass to next activity
                     Intent i = new Intent(getBaseContext(),Menu.class);
-                    //Bundle bundle = new Bundle();
-                    //bundle.putParcelable("CDriver", currentUser);// 序列化
-                    //i.putExtras(bundle);// 发送数据
                     i.putExtra("CDriver",currentUser);
                     i.addFlags(i.FLAG_ACTIVITY_NEW_TASK);
                     getBaseContext().startActivity(i);}

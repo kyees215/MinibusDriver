@@ -16,13 +16,11 @@ public class StopAdapter extends RecyclerView.Adapter<StopAdapter.StopViewHolder
     private Context mContext;
     public class StopViewHolder extends RecyclerView.ViewHolder {
         TextView mWaiting;
-        //TextView mText;
         TextView mStopName;
 
         StopViewHolder(View itemView) {
             super(itemView);
             mWaiting = (TextView) itemView.findViewById(R.id.waiting);
-            //mText = (TextView) itemView.findViewById(R.id.textView9);
             mStopName = (TextView) itemView.findViewById(R.id.stop_name);
         }
         public void setValues(stop_data mStopList) {
